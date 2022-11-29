@@ -14,6 +14,10 @@ router.post('/forgot-password', validate(authValidation.forgotPassword), authCon
 router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
 router.post('/send-verification-email', auth(), authController.sendVerificationEmail);
 router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
+router.post('/addSchedule', validate(authValidation.addSchedule), authController.addSchedule);
+// router.get('/getSchedule', validate(authValidation.getSchedule), authController.getSchedule);
+router.get('/getSchedule', authController.getSchedule);
+router.post('/addUpdateDeviceToken', validate(authValidation.addUpdateDeviceToken), authController.addUpdateDeviceToken);
 
 module.exports = router;
 

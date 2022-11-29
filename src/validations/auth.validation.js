@@ -49,6 +49,23 @@ const verifyEmail = {
   }),
 };
 
+const addSchedule = {
+  body: Joi.object().keys({
+    added_by: Joi.string().required(),
+    added_for: Joi.string().required(),
+    start_time: Joi.string().required(),
+    end_time: Joi.string().required(),
+    detail: Joi.string().required(),
+  }),
+};
+
+const addUpdateDeviceToken = {
+  body: Joi.object().keys({
+    user_id: Joi.string().required(),
+    device_token: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   register,
   login,
@@ -57,4 +74,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   verifyEmail,
+  addSchedule,
+  addUpdateDeviceToken
 };
