@@ -4,6 +4,12 @@ const userService = require('./user.service');
 const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
+const scheduleService = require('./user.service');
+const { Schedule } = require('../models');
+
+const FCM = require('fcm-node');
+let serverKey = "";
+let fcm = new FCM(serverKey);
 
 /**
  * Login with username and password
@@ -90,10 +96,73 @@ const verifyEmail = async (verifyEmailToken) => {
   }
 };
 
+const addSchedule = async (body) => {
+  let userData;
+  try {
+    userData = await userService.getUserById(body.added_for);
+  } catch(error) {
+    console.log("Query Error: ",error);
+  }
+
+  try {
+    await Schedule.create(body);
+  } catch (error) {
+    console.log("Query Error: ",error);
+  }
+
+  if(userData && userData.device_token && userData.device_token !="") {
+    let message = {
+      to: userData.device_token,
+      data: {
+        title: "Schedule Updated",
+        body: body
+      }
+    };
+  
+    await fcm.send(message, async function(err, response) {
+        if (err) {
+            console.log("Something has gone wrong!"+err);
+            console.log("Response:! "+response);
+        } else {
+            // showToast("Successfully sent with response");
+            console.log("Notification successfully!");
+        }
+
+    });
+  }
+};
+
+const getSchedule = async () => {
+  let scheduleData;
+
+  try {
+    scheduleData = await Schedule.findAll();
+  } catch (error) {
+    console.log("Query Error: ",error);
+  }
+
+  return scheduleData;
+};
+
+const addUpdateDeviceToken = async (body) => {
+  let userData;
+
+  try {
+    userData = await userService.updateUserById(body.user_id, { device_token: body.device_token });
+  } catch (error) {
+    console.log("Query Error: ",error);
+  }
+
+  return userData;
+};
+
 module.exports = {
   loginUserWithEmailAndPassword,
   logout,
   refreshAuth,
   resetPassword,
   verifyEmail,
+  addSchedule,
+  getSchedule,
+  addUpdateDeviceToken
 };

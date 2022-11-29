@@ -113,6 +113,11 @@ const generateVerifyEmailToken = async (user) => {
   return verifyEmailToken;
 };
 
+const getTokenByUserId = async (userId) => {
+  return Token.findOne({ user: userId });
+};
+
+
 module.exports = {
   generateToken,
   saveToken,
@@ -120,4 +125,5 @@ module.exports = {
   generateAuthTokens,
   generateResetPasswordToken,
   generateVerifyEmailToken,
+  getTokenByUserId
 };

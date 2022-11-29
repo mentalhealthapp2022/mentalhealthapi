@@ -44,6 +44,9 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    device_token: {
+      type: String,
+    },
   },
   {
     timestamps: true,

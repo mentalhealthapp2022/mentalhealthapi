@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { authService, userService, tokenService, emailService } = require('../services');
+const moment = require("moment");
 
 const register = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
@@ -47,6 +48,29 @@ const verifyEmail = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+
+const addSchedule = catchAsync(async (req, res) => {
+  let body = req.body;
+  body.start_time = moment(body.start_time).format();
+  body.end_time = moment(body.end_time).format();
+  const schedule = await authService.addSchedule(body);
+  // const tokens = await tokenService.generateAuthTokens(user);
+  res.send({ schedule });
+});
+
+const getSchedule = catchAsync(async (req, res) => {
+  const schedule = await authService.getSchedule();
+  // const tokens = await tokenService.generateAuthTokens(user);
+  res.send({ schedule });
+});
+
+const addUpdateDeviceToken = catchAsync(async (req, res) => {
+  let body = req.body;
+  const userUpdate = await authService.addUpdateDeviceToken(body);
+  // const tokens = await tokenService.generateAuthTokens(user);
+  res.send({ userUpdate });
+});
+
 module.exports = {
   register,
   login,
@@ -56,4 +80,7 @@ module.exports = {
   resetPassword,
   sendVerificationEmail,
   verifyEmail,
+  addSchedule,
+  getSchedule,
+  addUpdateDeviceToken
 };
