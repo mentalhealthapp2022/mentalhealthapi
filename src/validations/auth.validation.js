@@ -60,7 +60,7 @@ const addSchedule = {
 };
 
 const getSchedule = {
-  body: Joi.object().keys({
+  query: Joi.object().keys({
     user_id: Joi.string().required(),
   }),
 };

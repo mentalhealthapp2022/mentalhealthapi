@@ -99,16 +99,17 @@ const verifyEmail = async (verifyEmailToken) => {
 const addSchedule = async (body) => {
   let userData, schedule;
   try {
-    userData = await userService.getUserById(body.added_for);
+    userData = await User.findById(body.added_for);
   } catch(error) {
     console.log("Query Error: ",error);
   }
-
+  
   try {
     schedule = await Schedule.create(body);
   } catch (error) {
     console.log("Query Error: ",error);
   }
+
 
   if(userData && userData.device_token && userData.device_token !="") {
     let message = {
@@ -121,14 +122,15 @@ const addSchedule = async (body) => {
   
     await fcm.send(message, async function(err, response) {
         if (err) {
-            console.log("Something has gone wrong!"+err);
+            console.log("FCM Notification: Something has gone wrong!"+err);
             console.log("Response:! "+response);
         } else {
             // showToast("Successfully sent with response");
-            console.log("Notification successfully!");
+            console.log("FCM Notification successfully!");
         }
 
     });
+
     return schedule;
   }
 };
@@ -137,7 +139,7 @@ const getSchedule = async (userId) => {
   let scheduleData;
 
   try {
-    scheduleData = await Schedule.findOne({ added_for: userId }).lean();
+    scheduleData = await Schedule.find({ added_for: userId }).lean();
   } catch (error) {
     console.log("Query Error: ",error);
   }
@@ -147,13 +149,11 @@ const getSchedule = async (userId) => {
 
 const addUpdateDeviceToken = async (body) => {
   let userData;
-
   try {
-    userData = await User.findByIdAndUpdate(body.user_id, { device_token: body.device_token });
+    userData = await User.findOneAndUpdate({_id: body.user_id}, { device_token: body.device_token }, { new: true}).lean();
   } catch (error) {
     console.log("Query Error: ",error);
   }
-
   return userData;
 };
 

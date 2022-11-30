@@ -55,7 +55,7 @@ const addSchedule = catchAsync(async (req, res) => {
   body.end_time = moment(body.end_time).format();
   const schedule = await authService.addSchedule(body);
   // const tokens = await tokenService.generateAuthTokens(user);
-  res.send({ schedule });
+  res.send(schedule);
 });
 
 const getSchedule = catchAsync(async (req, res) => {
