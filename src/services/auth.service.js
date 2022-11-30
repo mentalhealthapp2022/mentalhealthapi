@@ -8,7 +8,7 @@ const scheduleService = require('./user.service');
 const { Schedule } = require('../models');
 
 const FCM = require('fcm-node');
-let serverKey = "";
+let serverKey = "BGnfhZZESjMVNTApgZPsuwQQQZKr1Hh7YXWKpybUwMokGyevYMn8CX7vbj95DgD5COB7_m1I5bMckafelGDsDjg";
 let fcm = new FCM(serverKey);
 
 /**
