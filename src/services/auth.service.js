@@ -5,7 +5,7 @@ const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
 const scheduleService = require('./user.service');
-const { Schedule } = require('../models');
+const { Schedule, User } = require('../models');
 
 const FCM = require('fcm-node');
 let serverKey = "BGnfhZZESjMVNTApgZPsuwQQQZKr1Hh7YXWKpybUwMokGyevYMn8CX7vbj95DgD5COB7_m1I5bMckafelGDsDjg";
@@ -97,7 +97,7 @@ const verifyEmail = async (verifyEmailToken) => {
 };
 
 const addSchedule = async (body) => {
-  let userData;
+  let userData, schedule;
   try {
     userData = await userService.getUserById(body.added_for);
   } catch(error) {
@@ -105,7 +105,7 @@ const addSchedule = async (body) => {
   }
 
   try {
-    await Schedule.create(body);
+    schedule = await Schedule.create(body);
   } catch (error) {
     console.log("Query Error: ",error);
   }
@@ -129,14 +129,15 @@ const addSchedule = async (body) => {
         }
 
     });
+    return schedule;
   }
 };
 
-const getSchedule = async () => {
+const getSchedule = async (userId) => {
   let scheduleData;
 
   try {
-    scheduleData = await Schedule.findAll();
+    scheduleData = await Schedule.findOne({ added_for: userId }).lean();
   } catch (error) {
     console.log("Query Error: ",error);
   }
@@ -148,7 +149,7 @@ const addUpdateDeviceToken = async (body) => {
   let userData;
 
   try {
-    userData = await userService.updateUserById(body.user_id, { device_token: body.device_token });
+    userData = await User.findByIdAndUpdate(body.user_id, { device_token: body.device_token });
   } catch (error) {
     console.log("Query Error: ",error);
   }

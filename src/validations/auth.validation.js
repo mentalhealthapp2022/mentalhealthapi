@@ -59,6 +59,12 @@ const addSchedule = {
   }),
 };
 
+const getSchedule = {
+  body: Joi.object().keys({
+    user_id: Joi.string().required(),
+  }),
+};
+
 const addUpdateDeviceToken = {
   body: Joi.object().keys({
     user_id: Joi.string().required(),
@@ -75,5 +81,6 @@ module.exports = {
   resetPassword,
   verifyEmail,
   addSchedule,
+  getSchedule,
   addUpdateDeviceToken
 };

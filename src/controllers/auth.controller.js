@@ -59,7 +59,8 @@ const addSchedule = catchAsync(async (req, res) => {
 });
 
 const getSchedule = catchAsync(async (req, res) => {
-  const schedule = await authService.getSchedule();
+  let userId = req.query.user_id;
+  const schedule = await authService.getSchedule(userId);
   // const tokens = await tokenService.generateAuthTokens(user);
   res.send({ schedule });
 });
@@ -67,7 +68,6 @@ const getSchedule = catchAsync(async (req, res) => {
 const addUpdateDeviceToken = catchAsync(async (req, res) => {
   let body = req.body;
   const userUpdate = await authService.addUpdateDeviceToken(body);
-  // const tokens = await tokenService.generateAuthTokens(user);
   res.send({ userUpdate });
 });
 

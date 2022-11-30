@@ -16,7 +16,7 @@ router.post('/send-verification-email', auth(), authController.sendVerificationE
 router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
 router.post('/addSchedule', validate(authValidation.addSchedule), authController.addSchedule);
 // router.get('/getSchedule', validate(authValidation.getSchedule), authController.getSchedule);
-router.get('/getSchedule', authController.getSchedule);
+router.get('/getSchedule', validate(authValidation.getSchedule), authController.getSchedule);
 router.post('/addUpdateDeviceToken', validate(authValidation.addUpdateDeviceToken), authController.addUpdateDeviceToken);
 
 module.exports = router;
@@ -292,4 +292,49 @@ module.exports = router;
  *             example:
  *               code: 401
  *               message: verify email failed
+ */
+/**
+ * @swagger
+ * /auth/addSchedule:
+ *   post:
+ *     summary: Add schedule
+ *     description: Schedule will be added and push notification will be sent.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       "204":
+ *         description: No content
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+/**
+ * @swagger
+ * /auth/getSchedule:
+ *   get:
+ *     summary: Get schedule
+ *     description: Schedule for user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       "204":
+ *         description: No content
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+/**
+ * @swagger
+ * /auth/addUpdateToken:
+ *   post:
+ *     summary: Add/Update Token
+ *     description: Device Token be added/updated
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       "204":
+ *         description: No content
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
  */
