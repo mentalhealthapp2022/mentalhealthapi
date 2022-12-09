@@ -97,7 +97,7 @@ const verifyEmail = async (verifyEmailToken) => {
 };
 
 const addSchedule = async (body) => {
-  let userData, schedule;
+  let userData, schedule, resp = {};
   try {
     userData = await User.findById(body.added_for);
   } catch(error) {
@@ -130,31 +130,35 @@ const addSchedule = async (body) => {
         }
 
     });
-
-    return schedule;
+    resp.code = 200;
+    resp.data = schedule;
   }
+  return resp;
 };
 
 const getSchedule = async (userId) => {
-  let scheduleData;
+  let scheduleData, resp = {};
 
   try {
     scheduleData = await Schedule.find({ added_for: userId }).lean();
   } catch (error) {
     console.log("Query Error: ",error);
   }
-
-  return scheduleData;
+  resp.code = 200;
+  resp.data = scheduleData;
+  return resp;
 };
 
 const addUpdateDeviceToken = async (body) => {
-  let userData;
+  let userData, resp = {};
   try {
     userData = await User.findOneAndUpdate({_id: body.user_id}, { device_token: body.device_token }, { new: true}).lean();
   } catch (error) {
     console.log("Query Error: ",error);
   }
-  return userData;
+  resp.code = 200;
+  resp.data = userData;
+  return resp;
 };
 
 module.exports = {

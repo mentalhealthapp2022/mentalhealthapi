@@ -8,10 +8,13 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<User>}
  */
 const createUser = async (userBody) => {
+  let resp = {};
   if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
-  return User.create(userBody);
+  resp.status = 200;
+  resp.data = await User.create(userBody);
+  return resp;
 };
 
 /**
@@ -24,8 +27,10 @@ const createUser = async (userBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryUsers = async (filter, options) => {
-  const users = await User.paginate(filter, options);
-  return users;
+  let resp = {}; 
+  resp.code = 200;
+  resp.data = await User.paginate(filter, options);
+  return resp;
 };
 
 /**
@@ -34,7 +39,10 @@ const queryUsers = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  return User.findById(id);
+  let resp = {};
+  resp.code = 200;
+  resp.data = User.findById(id);
+  return resp;
 };
 
 /**
@@ -53,7 +61,9 @@ const getUserByEmail = async (email) => {
  * @returns {Promise<User>}
  */
 const updateUserById = async (userId, updateBody) => {
+  let resp = { code:200 };
   const user = await getUserById(userId);
+  resp.data = user;
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -62,7 +72,7 @@ const updateUserById = async (userId, updateBody) => {
   }
   Object.assign(user, updateBody);
   await user.save();
-  return user;
+  return resp;
 };
 
 /**
@@ -71,12 +81,15 @@ const updateUserById = async (userId, updateBody) => {
  * @returns {Promise<User>}
  */
 const deleteUserById = async (userId) => {
+  let resp = {};
+  resp.code = 200;
   const user = await getUserById(userId);
+  resp.data = user;
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
   await user.remove();
-  return user;
+  return resp;
 };
 
 module.exports = {

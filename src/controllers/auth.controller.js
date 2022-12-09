@@ -6,35 +6,37 @@ const moment = require("moment");
 const register = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
   const tokens = await tokenService.generateAuthTokens(user);
-  res.status(httpStatus.CREATED).send({ user, tokens });
+  res.status(httpStatus.CREATED).send({ user, tokens, code: 200 });
 });
 
 const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   const user = await authService.loginUserWithEmailAndPassword(email, password);
   const tokens = await tokenService.generateAuthTokens(user);
-  res.send({ user, tokens });
+  res.send({ user, tokens, code: 200 });
 });
 
 const logout = catchAsync(async (req, res) => {
   await authService.logout(req.body.refreshToken);
-  res.status(httpStatus.NO_CONTENT).send();
+  // res.status(httpStatus.NO_CONTENT).send();
+  res.send({ code:200, msg:"Logged Out Successfully!" });
 });
 
 const refreshTokens = catchAsync(async (req, res) => {
   const tokens = await authService.refreshAuth(req.body.refreshToken);
-  res.send({ ...tokens });
+  res.send({ ...tokens, code: 200 });
 });
 
 const forgotPassword = catchAsync(async (req, res) => {
   const resetPasswordToken = await tokenService.generateResetPasswordToken(req.body.email);
   await emailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
-  res.status(httpStatus.NO_CONTENT).send();
+  // res.status(httpStatus.NO_CONTENT).send();
+  res.send({ code: 200, msg:"Password forget successful!"});
 });
 
 const resetPassword = catchAsync(async (req, res) => {
   await authService.resetPassword(req.query.token, req.body.password);
-  res.status(httpStatus.NO_CONTENT).send();
+  res.status(httpStatus.NO_CONTENT).send({code: 200});
 });
 
 const sendVerificationEmail = catchAsync(async (req, res) => {
@@ -53,7 +55,7 @@ const addSchedule = catchAsync(async (req, res) => {
   let body = req.body;
   body.start_time = moment(body.start_time).format();
   body.end_time = moment(body.end_time).format();
-  const schedule = await authService.addSchedule(body);
+  let schedule = await authService.addSchedule(body);
   // const tokens = await tokenService.generateAuthTokens(user);
   res.send(schedule);
 });
@@ -68,7 +70,7 @@ const getSchedule = catchAsync(async (req, res) => {
 const addUpdateDeviceToken = catchAsync(async (req, res) => {
   let body = req.body;
   const userUpdate = await authService.addUpdateDeviceToken(body);
-  res.send({ userUpdate });
+  res.send(userUpdate);
 });
 
 module.exports = {
